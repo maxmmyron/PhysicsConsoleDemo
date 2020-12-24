@@ -28,10 +28,13 @@ void debugEx()
 int main()
 {
 	Particle p1("Particle A", 3.0f, Vector(), Vector(1, 0), Vector());
+	//p1.PrintStats = true;
 
 	e.Add(p1);
 
 	e.debugFunction = debugEx;
 
 	e.InitLoop();
+
+	e.getParticleFromParticleMap("Particle A").debugPrintState();
 }

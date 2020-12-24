@@ -24,13 +24,17 @@ void Particle::update(double dt)
 	vel += (accel * dt);
 	pos += (vel * dt);
 
-	printStats();
+	if (PrintStats)
+	{
+		debugPrintState();
+	}
+	
 }
 
 /*************************
 	Debug
 *************************/
-void Particle::printStats()
+void Particle::debugPrintState()
 {
 	std::cout << "Printing stats for particle \"" << name << "\":" << std::endl;
 	

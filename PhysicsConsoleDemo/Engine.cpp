@@ -9,6 +9,8 @@
 #include <Particle.h>
 #include <vector>
 
+#include<map>
+
 #include <thread>
 
 /*************************
@@ -84,7 +86,7 @@ void Engine::Loop()
 *************************/
 void Engine::Add(Particle p)
 {
-	GameState.ParticleArray.push_back(p);
+	GameState.ParticleMap.insert(std::pair<const char*, Particle>(p.name, p));
 }
 
 /*************************
@@ -102,9 +104,10 @@ bool Engine::HandleEvents()
 *************************/
 void Engine::Update(double dt)
 {
-	for (typename std::vector<Particle>::iterator it = GameState.ParticleArray.begin(); it != GameState.ParticleArray.end(); it++)
+	//Particle Phys Update
+	for (typename std::map<const char*, Particle>::iterator it = GameState.ParticleMap.begin(); it != GameState.ParticleMap.end(); it++)
 	{
-		it->update(dt);
+		(it)->second.update(dt);
 	}
 }
 void Engine::PostUpdate(double dt)
@@ -120,4 +123,9 @@ double Engine::getTime()
 {
 	auto now_ms = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - Engine::time);
 	return now_ms.count();
+}
+
+Particle Engine::getParticleFromParticleMap(const char* particleName)
+{
+	return GameState.ParticleMap[particleName];
 }

@@ -4,6 +4,7 @@
 #include <Particle.h>
 #include <vector>
 #include <chrono>
+#include <map>
 
 class Engine
 {
@@ -25,7 +26,7 @@ public:
 	*************************/
 	struct State
 	{
-		std::vector<Particle> ParticleArray;
+		std::map<const char*, Particle> ParticleMap;
 	} GameState;
 
 	/*************************
@@ -39,6 +40,8 @@ public:
 		Return Function
 	*************************/
 	double getTime();
+
+	Particle getParticleFromParticleMap(const char*);
 
 private:
 	/*************************

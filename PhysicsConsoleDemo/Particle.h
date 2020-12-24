@@ -12,6 +12,8 @@ public:
 	Vector accel;
 	Vector pos;
 
+	bool PrintStats = false;
+
 	/*************************
 		Constructors
 	*************************/
@@ -26,12 +28,10 @@ public:
 		Update
 	*************************/
 	void update(double);
-
+	
 	/*************************
 		Debug
 	*************************/
-	void printStats();
-
-	
+	void debugPrintState();
 };
 
