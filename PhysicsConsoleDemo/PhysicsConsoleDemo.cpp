@@ -18,13 +18,20 @@ void debugPrintList(std::vector<T> arr)
 	}
 }
 
+Engine e = Engine();
+
+void debugEx()
+{
+	std::cout << "Elapsed Time: " << e.getTime() << "s"<< std::endl;
+}
+
 int main()
 {
 	Particle p1("Particle A", 3.0f, Vector(), Vector(1, 0), Vector());
 
-	Engine e = Engine();
-
 	e.Add(p1);
+
+	e.debugFunction = debugEx;
 
 	e.InitLoop();
 }

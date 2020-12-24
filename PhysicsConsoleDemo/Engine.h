@@ -1,8 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include<Particle.h>
-#include<vector>
+#include <Particle.h>
+#include <vector>
+#include <chrono>
 
 class Engine
 {
@@ -11,9 +12,8 @@ public:
 		Public Variables
 	*************************/
 	bool running = true;
-	double Time = 0.0;
 
-
+	void (*debugFunction)() = NULL;
 
 	/*************************
 		Constructor
@@ -35,7 +35,16 @@ public:
 
 	void Add(Particle);
 
+	/*************************
+		Return Function
+	*************************/
+	double getTime();
+
 private:
+	/*************************
+		Private Variables
+	*************************/
+	std::chrono::steady_clock::time_point time;
 
 	/*************************
 		Handler Functions
