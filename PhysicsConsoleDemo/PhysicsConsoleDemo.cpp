@@ -9,6 +9,12 @@
 #include <type_traits>
 #include <iterator>
 
+#include<File.h>
+
+//issues:
+//doesn't print correct stats after loop has ended
+//doesn't run true to time (lags behind)
+
 template<typename T>
 void debugPrintList(std::vector<T> arr)
 {
@@ -22,19 +28,18 @@ Engine e = Engine();
 
 void debugEx()
 {
-	std::cout << "Elapsed Time: " << e.getTime() << "s"<< std::endl;
+	std::cout << "Elapsed Time: " << e.GetTime() << "s"<< std::endl;
 }
 
 int main()
 {
-	Particle p1("Particle A", 3.0f, Vector(), Vector(1, 0), Vector());
-	//p1.PrintStats = true;
+	Particle p1 = Particle("Particle A", 3.0f, Vector(), Vector(1, 0), Vector());
+	Particle p2 = Particle("Particle B", 3.0f, Vector(), Vector(), Vector(1, 0));
+
+	p1.SetPrintStatsValue(true);
 
 	e.Add(p1);
-
-	e.debugFunction = debugEx;
+	e.Add(p2);
 
 	e.InitLoop();
-
-	e.getParticleFromParticleMap("Particle A").debugPrintState();
 }

@@ -1,13 +1,18 @@
 #pragma once
 
 #include <iostream>
-#include <Particle.h>
+
+//#include "Particle.h"
 #include <vector>
 #include <chrono>
 #include <map>
+#include <type_traits>
+
+class Particle;
 
 class Engine
 {
+	Particle* _p = nullptr;
 public:
 	/*************************
 		Public Variables
@@ -22,26 +27,27 @@ public:
 	Engine();
 
 	/*************************
-		Loop Function
+		Game State & Manipulators
 	*************************/
 	struct State
 	{
 		std::map<const char*, Particle> ParticleMap;
 	} GameState;
 
+	void Add(Particle);
+	void Remove(const char* key);
+
 	/*************************
 		Loop Init Function
 	*************************/
 	void InitLoop();
 
-	void Add(Particle);
-
 	/*************************
-		Return Function
+		Getters & Setters
 	*************************/
-	double getTime();
+	double GetTime();
 
-	Particle getParticleFromParticleMap(const char*);
+	Particle GetParticleFromParticleMap(const char*);
 
 private:
 	/*************************
