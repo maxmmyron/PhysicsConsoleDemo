@@ -9,7 +9,7 @@ Vector::Vector()
 	this->x = 0.0f;
 	this->y = 0.0f;
 }
-Vector::Vector(float x, float y)
+Vector::Vector(double x, double y)
 {
 	this->x = x;
 	this->y = y;
@@ -32,7 +32,7 @@ Vector Vector::operator-=(Vector v)
 	return Vector(this->x, this->y);
 }
 
-Vector Vector::operator*=(float f)
+Vector Vector::operator*=(double f)
 {
 	this->x *= f;
 	this->y *= f;
@@ -49,7 +49,7 @@ Vector Vector::operator-(Vector v)
 	return Vector(this->x - v.x, this->y - v.y);
 }
 
-Vector Vector::operator*(float f)
+Vector Vector::operator*(double f)
 {
 	return Vector(this->x * f, this->y * f);
 }
@@ -57,12 +57,12 @@ Vector Vector::operator*(float f)
 /*************************
 	Vector Math
 *************************/
-float Vector::getMagnitude()
+double Vector::getMagnitude()
 {
 	return sqrt(this->x + this->y);
 }
 
-float Vector::getDotProduct(Vector v)
+double Vector::getDotProduct(Vector v)
 {
 	return this->x * v.x + this->y * v.y;
 }

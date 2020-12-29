@@ -3,32 +3,32 @@
 class Vector
 {
 public:
-	float x;
-	float y;
+	double x;
+	double y;
 
 	/*************************
 		Constructor
 	*************************/
 	Vector();
-	Vector(float, float);
+	Vector(double, double);
 
 	/*************************
 		Vector Manipulation
 	*************************/
 	Vector operator+=(Vector);
 	Vector operator-=(Vector);
-	Vector operator*=(float);
+	Vector operator*=(double);
 
 	Vector operator+(Vector);
 	Vector operator-(Vector);
-	Vector operator*(float);
+	Vector operator*(double);
 
 	/*************************
 		Vector Math
 	*************************/
-	float getMagnitude();
+	double getMagnitude();
 	
-	float getDotProduct(Vector);
+	double getDotProduct(Vector);
 
 	/*************************
 		Debug
