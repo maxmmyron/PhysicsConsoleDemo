@@ -71,19 +71,20 @@ void Engine::Loop()
 	ns lag(0ns);
 
 	//Get a time for right now
-	auto t = clock::now();
-	//DEBUG: set extra variable to value of t. We reset the value of t later so we can't use it down the line.
-	Engine::time = t;
+	auto t_prev = clock::now();
+	Engine::time = t_prev;
+
 	bool running = true;
 
 	//quite jank, but should do for now.
 	int n = 0;
 	while (running)
 	{
+		auto t_now = clock::now();
 		//delta_t is equal to the change in time.
-		auto dt = clock::now() - t;
+		auto dt = t_now - t_prev;
 		//reset t
-		t = clock::now();
+		t_prev = t_now;
 
 		lag += std::chrono::duration_cast<ns>(dt);
 
@@ -103,29 +104,6 @@ void Engine::Loop()
 
 			if (f.IsOpen)
 			{
-				/*f.Write<const char*>("-----");
-				
-				f.Write<const char*>("Elapsed Time: ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
-				f.Write<const char*>("s");
-				
-				f.Write<const char*>("Position X for Particle A: ", false);
-				f.Write<float>(Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x);
-
-				f.Write<const char*>("Offset of PosX of Particle A and Elapsed Time: ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count() - Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x, false);
-				f.Write<const char*>("s ", false);
-
-				f.Write<const char*>("(", false);
-				f.Write<double>(Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x / std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
-				f.Write<const char*>("% from true overall)", true);
-
-				f.Write<const char*>("Current Lag: ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(lag).count(), false);
-				f.Write<const char*>("s (current timestep is ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(timestep).count(), false);
-				f.Write<const char*>("s.)", true);*/
-
 				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
 				f.Write<const char*>(", ", false);
 				f.Write<float>(Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x, false);
