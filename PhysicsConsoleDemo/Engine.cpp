@@ -44,7 +44,6 @@ void Engine::Remove(const char* name)
 using namespace std::chrono_literals;
 void Engine::InitLoop()
 {
-	//Create a thread for the Engine Loop to allow for multitasking down the line
 	std::thread LoopThread(&Engine::Loop, this);
 
 	LoopThread.join();
@@ -52,19 +51,18 @@ void Engine::InitLoop()
 
 void Engine::Loop()
 {
-	/*************************/
-	// DEBUG: Exporting data to CSV file for analysis
-	/*************************/
-	char buffer[32]; //create buffer to store UTC time
-	int time = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now()).time_since_epoch().count(); //create int to store UTC timepoint
-	snprintf(buffer, sizeof(char) * 32, "debug%i.csv", time); //insert timepoint into existing .csv file name for unique file
-	File f(buffer, std::ios::in | std::ios::out | std::ios::trunc); //Create a new file with the unique name
+	char buffer[32];
+	//Loss in data here from _Rep to int
+	int time = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now()).time_since_epoch().count();
+	snprintf(buffer, sizeof(char) * 32, "debug%i.csv", time);
+	std::cout << buffer << std::endl;
+	const char* fName = buffer;
+	File f(buffer, std::ios::in | std::ios::out | std::ios::trunc);
 	if (f.IsOpen)
 	{
-		f.Write<const char*>("Time, Pos, Offset, Percent, Lag", true); //CSV column names
+		f.Write<const char*>("Time, Pos, Offset, Percent, Lag", true);
 	}
 
-	//define namespaces
 	using clock = std::chrono::high_resolution_clock;
 	using ns = std::chrono::nanoseconds;
 
@@ -74,7 +72,6 @@ void Engine::Loop()
 
 	//Get a time for right now
 	auto t_prev = clock::now();
-	//Set Engine::time to time at start to allow us to get time since engine started
 	Engine::time = t_prev;
 
 	bool running = true;
@@ -89,8 +86,10 @@ void Engine::Loop()
 		//reset t
 		t_prev = t_now;
 
-		//add dt to lag
 		lag += std::chrono::duration_cast<ns>(dt);
+
+		//return bool after we run Handler Events.
+		running = HandleEvents();
 
 		//Get a double value for delta_t. this is elasped time since last update call.
 		double dt_double = std::chrono::duration_cast<std::chrono::duration<double>>(dt).count();
@@ -98,22 +97,11 @@ void Engine::Loop()
 		//check if lag is greater than the preferred timestep. if so, then update and let lag value assume remainder of lag % timestep.
 		if (lag >= timestep)
 		{
-			//create divisor 
 			double divisor = std::chrono::duration_cast<std::chrono::duration<double>>(lag - (lag % timestep)).count();
-
-			//run event checking
-			running = HandleEvents();
-			//update & postupdate by dt + divisor 
 			Update(dt_double + divisor);
 			PostUpdate(dt_double + divisor);
 			lag %= timestep;
 
-			//run debug function if not null
-			if (Engine::debugFunction != NULL) debugFunction();
-
-			/*************************/
-			// DEBUG: Exporting data to CSV file for analysis
-			/*************************/
 			if (f.IsOpen)
 			{
 				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
@@ -127,6 +115,8 @@ void Engine::Loop()
 				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(lag).count(), false);
 				f.Write<const char*>(",", true);
 			}
+
+			if (Engine::debugFunction != NULL) debugFunction();
 		}
 	}
 	f.Close();

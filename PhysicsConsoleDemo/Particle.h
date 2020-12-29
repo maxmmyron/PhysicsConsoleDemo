@@ -2,9 +2,8 @@
 
 #include "Vector.h"
 #include "Engine.h"
-#include "Object.h"
 
-class Particle : public Object
+class Particle
 {
 public:
 	/*************************
