@@ -1,18 +1,34 @@
 #pragma once
 
 #include <Vector.h>
-#include <Engine.h>
 
 class Object
 {
 public:
 	/*************************
+		Constructors
+	*************************/
+	Object() = default;
+	/*************************
+		Particle Information
+	*************************/
+	const char* name = NULL;
+
+	/*************************
+		Particle Manipulation
+	*************************/
+	void DestroySelf();
+
+	/*************************
 		Getters & Setters
 	*************************/
-	bool IsDebugging();
-	void SetDebugging(bool);
+	bool ToDestroy();
 
-	const char* GetName();
+	bool IsUpdating();
+	void SetUpdatingStatus(bool);
+
+	bool IsDebugging();
+	void SetDebuggingStatus(bool);
 
 	double GetMass();
 	void SetMass(double);
@@ -27,14 +43,14 @@ public:
 	void SetAcceleration(Vector);
 
 private:
-	const char* name = NULL;
-	double mass = 1.0;
+	bool doUpdates = true;
+	bool debugging = false;
+	bool _doDestroy = false;
+protected:
 	Vector position;
 	Vector velocity;
 	Vector acceleration;
 
-	Engine engine;
-	bool doUpdates = true;
-	bool debugging = false;
+	double mass = 1.0;
 };
 

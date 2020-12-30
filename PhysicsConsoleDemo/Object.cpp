@@ -2,20 +2,39 @@
 #include <Vector.h>
 
 /*************************
+	Object Manipulation
+*************************/
+
+void Object::DestroySelf()
+{
+	_doDestroy = true;
+}
+
+/*************************
 	Getters & Setters
 *************************/
+
+bool Object::ToDestroy()
+{
+	return _doDestroy;
+}
+
+bool Object::IsUpdating()
+{
+	return doUpdates;
+}
+void Object::SetUpdatingStatus(bool b)
+{
+	doUpdates = b;
+}
+
 bool Object::IsDebugging()
 {
 	return debugging;
 }
-void Object::SetDebugging(bool b)
+void Object::SetDebuggingStatus(bool b)
 {
 	debugging = b;
-}
-
-const char* Object::GetName()
-{
-	return name;
 }
 
 double Object::GetMass()

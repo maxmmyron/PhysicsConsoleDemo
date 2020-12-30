@@ -2,17 +2,14 @@
 
 #include <iostream>
 
-//#include "Particle.h"
+#include <Particle.h>
 #include <vector>
 #include <chrono>
 #include <map>
 #include <type_traits>
 
-class Particle;
-
 class Engine
 {
-	Particle* _p = nullptr;
 public:
 	/*************************
 		Public Variables

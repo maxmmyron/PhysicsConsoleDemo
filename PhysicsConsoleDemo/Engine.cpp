@@ -19,7 +19,7 @@
 *************************/
 Engine::Engine()
 {
-	Engine::_p = nullptr;
+	
 }
 
 /*************************
@@ -28,7 +28,7 @@ Engine::Engine()
 
 void Engine::Add(Particle p)
 {
-	GameState.ParticleMap.insert(std::pair<const char*, Particle>(p.getName(), p));
+	GameState.ParticleMap.insert(std::pair<const char*, Particle>(p.name, p));
 }
 
 void Engine::Remove(const char* name)
@@ -118,11 +118,11 @@ void Engine::Loop()
 			{
 				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
 				f.Write<const char*>(", ", false);
-				f.Write<float>(Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x, false);
+				f.Write<float>(Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x, false);
 				f.Write<const char*>(", ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count() - Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x, false);
+				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count() - Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x, false);
 				f.Write<const char*>(", ", false);
-				f.Write<double>(Engine::GameState.ParticleMap.find("Particle A")->second.getPosition().x / std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
+				f.Write<double>(Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x / std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
 				f.Write<const char*>(", ", false);
 				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(lag).count(), false);
 				f.Write<const char*>(",", true);
@@ -150,7 +150,17 @@ void Engine::Update(double dt)
 	//Particle Phys Update
 	for (typename std::map<const char*, Particle>::iterator it = GameState.ParticleMap.begin(); it != GameState.ParticleMap.end(); it++)
 	{
-		(it)->second.Update(dt);
+		Particle p = it->second;
+		if (p.ToDestroy())
+		{
+			Engine::GameState.ParticleMap.erase(p.name);
+			continue;
+		}
+		else 
+		{
+			p.Update(dt);
+		}
+		
 	}
 }
 void Engine::PostUpdate(double dt)
@@ -170,5 +180,5 @@ double Engine::GetTime()
 
 Particle Engine::GetParticleFromParticleMap(const char* particleName)
 {
-	return GameState.ParticleMap[particleName];
+	return GameState.ParticleMap.find(particleName)->second;
 }

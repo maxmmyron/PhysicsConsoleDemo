@@ -36,10 +36,11 @@ int main()
 	Particle p1 = Particle("Particle A", 3.0f, Vector(), Vector(1, 0), Vector());
 	Particle p2 = Particle("Particle B", 3.0f, Vector(), Vector(), Vector(1, 0));
 
-	p1.SetPrintStatsValue(true);
-
 	e.Add(p1);
 	e.Add(p2);
 
 	e.InitLoop();
+
+	p1.DebugPrintState();
+	p2.DebugPrintState();
 }

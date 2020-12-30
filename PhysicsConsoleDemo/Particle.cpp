@@ -1,49 +1,17 @@
 #include "Particle.h"
-#include "Engine.h"
 
 /*************************
 	Constructors
 *************************/
 
-Particle::Particle(const char* name, float mass, Vector pos, Vector vel, Vector accel, bool doUpdates) {
+Particle::Particle(const char* name, float mass, Vector pos, Vector vel, Vector accel, bool doUpdates, bool debug) {
 	this->name = name;
 	this->mass = mass;
 	this->position = pos;
 	this->velocity = vel;
 	this->acceleration = accel;
-	this->doUpdates = doUpdates;
-}
-
-/*************************
-	Particle Informaton
-*************************/
-void Particle::SetEngine(Engine e)
-{
-	Particle::engine = e;
-}
-
-/*************************
-	Particle Manipulation
-*************************/
-
-void Particle::DestroySelf()
-{
-	engine.Remove(this->getName());
-}
-
-void Particle::PauseUpdates()
-{
-	doUpdates = false;
-}
-
-void Particle::ResumeUpdates()
-{
-	doUpdates = true;
-}
-
-bool Particle::IsUpdating()
-{
-	return doUpdates;
+	this->SetUpdatingStatus(doUpdates);
+	this->SetDebuggingStatus(debug);
 }
 
 /*************************
@@ -51,20 +19,22 @@ bool Particle::IsUpdating()
 *************************/
 void Particle::Update(double dt)
 {
-	//loss in data
-	velocity += (acceleration * dt);
-	//loss in data
-	position += (velocity * dt);
+	/*velocity = velocity + acceleration * dt;
+	position = position + velocity * dt;
 
-	DebugPrintState();
+	std::cout << velocity.x + acceleration.x * dt << std::endl;
+	std::cout << position.x + velocity.x * dt << std::endl;
+	*/
 
-	/*if (PrintStats)
+	this->position += 1;
+
+	std::cout << position.x << std::endl;
+
+	if (IsDebugging())
 	{
-		
-	}*/
-	/*if (doUpdates) {
-		
-	}*/
+		DebugPrintState();
+	}
+	
 }
 
 /*************************
@@ -74,14 +44,14 @@ void Particle::DebugPrintState()
 {
 	std::cout << "Printing stats for particle \"" << name << "\":" << std::endl;
 	
-	std::cout << "mass: " << mass << std::endl;
+	std::cout << "mass: " << GetMass() << std::endl;
 	
-	std::cout << "vel_x: " << velocity.x << std::endl;
-	std::cout << "vel_y: " << velocity.y << std::endl;
+	std::cout << "pos_x: " << GetPosition().x << std::endl;
+	std::cout << "pos_y: " << GetPosition().y << std::endl;
 
-	std::cout << "accel_x: " << acceleration.x << std::endl;
-	std::cout << "accel_y: " << acceleration.y << std::endl;
+	std::cout << "vel_x: " << GetVelocity().x << std::endl;
+	std::cout << "vel_y: " << GetVelocity().y << std::endl;
 
-	std::cout << "pos_x: " << position.x << std::endl;
-	std::cout << "pos_y: " << position.y << std::endl;
+	std::cout << "accel_x: " << GetAcceleration().x << std::endl;
+	std::cout << "accel_y: " << GetAcceleration().y << std::endl;
 }
