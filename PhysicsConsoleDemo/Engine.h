@@ -1,25 +1,25 @@
 #pragma once
 
+#include <Particle.h>
 #include <iostream>
-
-//#include "Particle.h"
-#include <vector>
-#include <chrono>
 #include <map>
-#include <type_traits>
+#include <vector> 
+#include <chrono>
+#include <iterator>
+#include <Windows.h>
 
-class Particle;
 
 class Engine
 {
-	Particle* _p = nullptr;
 public:
 	/*************************
 		Public Variables
 	*************************/
-	bool running = true;
+	bool isRunning = true;
 
 	void (*debugFunction)() = NULL;
+
+	std::map<const char*, Particle*> particleMap;
 
 	/*************************
 		Constructor
@@ -27,33 +27,30 @@ public:
 	Engine();
 
 	/*************************
-		Game State & Manipulators
+		Loop Functions
 	*************************/
-	struct State
-	{
-		std::map<const char*, Particle> ParticleMap;
-	} GameState;
-
-	void Add(Particle);
-	void Remove(const char* key);
+	void StartLoop();
+	void StopLoop();
 
 	/*************************
-		Loop Init Function
+		Map Functions
 	*************************/
-	void InitLoop();
+	bool AddParticle(Particle*);
+	bool RemoveParticle(Particle*);
+	bool RemoveParticle(const char*);
+	Particle* GetParticle(const char*);
 
 	/*************************
 		Getters & Setters
 	*************************/
-	double GetTime();
-
-	Particle GetParticleFromParticleMap(const char*);
+	double GetEngineTimeAsDouble();
+	std::chrono::steady_clock::time_point GetEngineTimePoint();
 
 private:
 	/*************************
 		Private Variables
 	*************************/
-	std::chrono::steady_clock::time_point time;
+	std::chrono::steady_clock::time_point engineTime;
 
 	/*************************
 		Handler Functions
@@ -65,10 +62,5 @@ private:
 	*************************/
 	void Update(double);
 	void PostUpdate(double);
-
-	/*************************
-		Loop Function
-	*************************/
-	void Loop();
 };
 

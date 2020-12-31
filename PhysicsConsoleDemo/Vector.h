@@ -10,12 +10,14 @@ public:
 		Constructor
 	*************************/
 	Vector();
+	Vector(double);
 	Vector(double, double);
 
 	/*************************
 		Vector Manipulation
 	*************************/
 	Vector operator+=(Vector);
+	Vector operator+=(double);
 	Vector operator-=(Vector);
 	Vector operator*=(double);
 
