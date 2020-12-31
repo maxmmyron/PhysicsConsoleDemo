@@ -9,6 +9,11 @@ Vector::Vector()
 	this->x = 0.0f;
 	this->y = 0.0f;
 }
+Vector::Vector(double a)
+{
+	this->x = a;
+	this->y = a;
+}
 Vector::Vector(double x, double y)
 {
 	this->x = x;

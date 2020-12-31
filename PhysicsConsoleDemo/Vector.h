@@ -10,6 +10,7 @@ public:
 		Constructor
 	*************************/
 	Vector();
+	Vector(double);
 	Vector(double, double);
 
 	/*************************

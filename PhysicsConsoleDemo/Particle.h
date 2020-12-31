@@ -1,25 +1,13 @@
 #pragma once
 
-#include "Vector.h"
-#include "Object.h"
+#include <GameObject.h>
+#include <Vector.h>
 
-class Particle : public Object
+class Particle : public GameObject
 {
 public:
-	/*************************
-		Constructors
-	*************************/
 	Particle() = default;
-	Particle(const char*, float, Vector, Vector, Vector, bool doUpdates = true, bool debug = false);
+	Particle(const char*, double, Vector, Vector, Vector);
 
-	/*************************
-		Update
-	*************************/
 	void Update(double);
-	
-	/*************************
-		Debug
-	*************************/
-	void DebugPrintState();
 };
-

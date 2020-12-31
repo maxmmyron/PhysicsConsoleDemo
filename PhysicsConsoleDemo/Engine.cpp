@@ -1,70 +1,11 @@
 #include "Engine.h"
 
-#include <iostream>
-#include <iomanip>
+Engine::Engine() {}
 
-#include <chrono>
-#include <Windows.h>
-
-#include <Particle.h>
-#include <vector>
-#include <File.h>
-
-#include <map>
-
-#include <thread>
-
-/*************************
-	Constructor
-*************************/
-Engine::Engine()
+//Runs the main Engine Loop.
+void Engine::StartLoop()
 {
-	
-}
-
-/*************************
-	Game State Manipulators
-*************************/
-
-void Engine::Add(Particle p)
-{
-	GameState.ParticleMap.insert(std::pair<const char*, Particle>(p.name, p));
-}
-
-void Engine::Remove(const char* name)
-{
-	GameState.ParticleMap.erase(name);
-}
-
-/*************************
-	Loop
-*************************/
-
-//Loop Initializer
-using namespace std::chrono_literals;
-void Engine::InitLoop()
-{
-	//Create a thread for the Engine Loop to allow for multitasking down the line
-	std::thread LoopThread(&Engine::Loop, this);
-
-	LoopThread.join();
-}
-
-void Engine::Loop()
-{
-	/*************************/
-	// DEBUG: Exporting data to CSV file for analysis
-	/*************************/
-	char buffer[32]; //create buffer to store UTC time
-	int time = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now()).time_since_epoch().count(); //create int to store UTC timepoint
-	snprintf(buffer, sizeof(char) * 32, "debug%i.csv", time); //insert timepoint into existing .csv file name for unique file
-	File f(buffer, std::ios::in | std::ios::out | std::ios::trunc); //Create a new file with the unique name
-	if (f.IsOpen)
-	{
-		f.Write<const char*>("Time, Pos, Offset, Percent, Lag", true); //CSV column names
-	}
-
-	//define namespaces
+	using namespace std::chrono_literals;
 	using clock = std::chrono::high_resolution_clock;
 	using ns = std::chrono::nanoseconds;
 
@@ -72,113 +13,147 @@ void Engine::Loop()
 
 	ns lag(0ns);
 
-	//Get a time for right now
-	auto t_prev = clock::now();
-	//Set Engine::time to time at start to allow us to get time since engine started
-	Engine::time = t_prev;
+	auto time_prev = clock::now();
+	engineTime = time_prev;
 
-	bool running = true;
-
-	//quite jank, but should do for now.
-	int n = 0;
-	while (running)
+	while (isRunning)
 	{
-		auto t_now = clock::now();
-		//delta_t is equal to the change in time.
-		auto dt = t_now - t_prev;
-		//reset t
-		t_prev = t_now;
+		auto time_now = clock::now();
 
-		//add dt to lag
-		lag += std::chrono::duration_cast<ns>(dt);
+		auto time_diff = time_now - time_prev;
 
-		//Get a double value for delta_t. this is elasped time since last update call.
-		double dt_double = std::chrono::duration_cast<std::chrono::duration<double>>(dt).count();
+		time_prev = time_now;
 
-		//check if lag is greater than the preferred timestep. if so, then update and let lag value assume remainder of lag % timestep.
+		lag += std::chrono::duration_cast<ns>(time_diff);
+
+		double dt = std::chrono::duration_cast<std::chrono::duration<double>>(time_diff).count();
+
 		if (lag >= timestep)
 		{
-			//create divisor 
-			double divisor = std::chrono::duration_cast<std::chrono::duration<double>>(lag - (lag % timestep)).count();
+			double divisor = std::chrono::duration_cast<std::chrono::duration<double>>(lag - lag % timestep).count();
 
-			//run event checking
-			running = HandleEvents();
-			//update & postupdate by dt + divisor 
-			Update(dt_double + divisor);
-			PostUpdate(dt_double + divisor);
+			isRunning = HandleEvents();
+
+			Update(divisor + dt);
+			PostUpdate(divisor + dt);
+
 			lag %= timestep;
 
-			//run debug function if not null
 			if (Engine::debugFunction != NULL) debugFunction();
-
-			/*************************/
-			// DEBUG: Exporting data to CSV file for analysis
-			/*************************/
-			if (f.IsOpen)
-			{
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
-				f.Write<const char*>(", ", false);
-				f.Write<float>(Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x, false);
-				f.Write<const char*>(", ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count() - Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x, false);
-				f.Write<const char*>(", ", false);
-				f.Write<double>(Engine::GameState.ParticleMap.find("Particle A")->second.GetPosition().x / std::chrono::duration_cast<std::chrono::duration<double>>(clock::now() - Engine::time).count(), false);
-				f.Write<const char*>(", ", false);
-				f.Write<double>(std::chrono::duration_cast<std::chrono::duration<double>>(lag).count(), false);
-				f.Write<const char*>(",", true);
-			}
 		}
 	}
-	f.Close();
 }
 
-/*************************
-	Handler Functions
-*************************/
+//Manually stops the Engine loop
+void Engine::StopLoop()
+{
+	isRunning = false;
+}
 
+//Adds a particle to the Engine so long as a Particle does not already exist with the desired name.
+bool Engine::AddParticle(Particle* p)
+{
+	particleMap.insert(std::pair<const char*, Particle*>(p->GetName(), p));
+	return true;
+	/*for (auto it = particleMap.begin(); it != particleMap.end(); it++)
+	{
+		Particle &b = *it->second;
+		if (b.GetName() == p->GetName())
+		{
+			return false;
+		}
+		else {
+			particleMap.insert(std::pair<const char*, Particle*>(p->GetName(), p));
+			return true;
+		}
+	}
+	return false;*/
+}
+
+//Removes a particle from the Engine so long as the desired Particle exists. Returns true if removed.
+bool Engine::RemoveParticle(Particle* p)
+{
+	particleMap.erase(p->GetName());
+	return true;
+	/*for (auto it = particleMap.begin(); it != particleMap.end(); it++)
+	{
+		Particle &b = *it->second;
+		if (b.GetName() == p->GetName())
+		{
+			particleMap.erase(p->GetName());
+			return true;
+		}
+	}
+	return false;*/
+}
+
+//Removes a particle from the Engine so long as a Particle with the desired name exists. Returns true if removed.
+bool Engine::RemoveParticle(const char* key)
+{
+	for (auto it = particleMap.begin(); it != particleMap.end(); it++)
+	{
+		Particle& b = *it->second;
+		if (b.GetName() == key)
+		{
+			particleMap.erase(key);
+			return true;
+		}
+	}
+	return false;
+}
+
+//Returns a reference to a particle in the particleMap. If there is no such Particle with the desired key, a nullptr is returned.
+Particle* Engine::GetParticle(const char* key)
+{
+	for (auto it = particleMap.begin(); it != particleMap.end(); it++)
+	{
+		Particle& b = *it->second;
+		if (it->second->GetName() == key)
+		{
+			return particleMap.find(key)->second;
+		}
+	}
+	return nullptr;
+}
+
+//Handles mouse and keyboard events and returns a bool to the Engine on whether to continue running.
 bool Engine::HandleEvents()
 {
 	if (GetKeyState('A') & 0x8000) return false;
 	return true;
 }
 
-/*************************
-	Update Functions
-*************************/
+//Runs an Update check for each GameObject in the game, and executes the appropriate response.
 void Engine::Update(double dt)
 {
-	//Particle Phys Update
-	for (typename std::map<const char*, Particle>::iterator it = GameState.ParticleMap.begin(); it != GameState.ParticleMap.end(); it++)
+	for (auto it = particleMap.begin(); it != particleMap.end(); it++)
 	{
-		Particle p = it->second;
-		if (p.ToDestroy())
+		Particle& p = *it->second;
+		if (p._doDestroy)
 		{
-			Engine::GameState.ParticleMap.erase(p.name);
-			continue;
+			RemoveParticle(&p);
 		}
-		else 
+		else
 		{
-			p.Update(dt);
+			if (p._doUpdates)
+			{
+				p.Update(dt);
+			}
 		}
-		
 	}
 }
+
 void Engine::PostUpdate(double dt)
 {
 
 }
 
-/*************************
-	Getters & Setters
-*************************/
-
-double Engine::GetTime()
+double Engine::GetEngineTimeAsDouble()
 {
-	auto now_ms = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - Engine::time);
-	return now_ms.count();
+	return std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - Engine::engineTime).count();
 }
 
-Particle Engine::GetParticleFromParticleMap(const char* particleName)
+std::chrono::steady_clock::time_point Engine::GetEngineTimePoint()
 {
-	return GameState.ParticleMap.find(particleName)->second;
+	return Engine::engineTime;
 }
