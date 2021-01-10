@@ -2,6 +2,8 @@
 
 using namespace PhysicsEngine;
 
+//TODO : return error (or -1?) for PolyArea if Polygon shape is complex, or throw error if the shape is complex in the first place on instantiation.
+
 /*************************
 	Constructors
 *************************/
