@@ -69,20 +69,25 @@ Vector Vector::operator*(double d)
 /*************************
 	Vector Math
 *************************/
-double Vector::getMagnitude()
+double Vector::GetMagnitude()
 {
 	return sqrt(this->x + this->y);
 }
 
-double Vector::getDotProduct(Vector v)
+double Vector::GetDotProduct(Vector v)
 {
 	return this->x * v.x + this->y * v.y;
+}
+
+double Vector::GetDistance(Vector v)
+{
+	return sqrt(pow(this->x - v.x, 2) + pow(this->y - v.y, 2));
 }
 
 /*************************
 	Debug
 *************************/
-void Vector::print()
+void Vector::PrintVector()
 {
 	std::cout << "x = " << this->x << std::endl;
 	std::cout << "y = " << this->y << std::endl;
