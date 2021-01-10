@@ -52,7 +52,7 @@ namespace PhysicsEngine
 		*************************/
 		void DebugPrint();
 	protected:
-		const char* _name;
+		const char* _name = nullptr;
 		double _mass = 1.0;
 		Vector _position = Vector();
 		Vector _velocity = Vector();
