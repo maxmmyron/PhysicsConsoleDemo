@@ -61,6 +61,11 @@ void GameObject::SetAcceleration(Vector a)
 void GameObject::DebugPrint()
 {
 	std::cout << "------------" << std::endl;
+
+	std::cout << "Printing out statistics for object \"" << _name << "\": " << std::endl;
+
+	std::cout << "mass: " << _mass << std::endl;
+
 	std::cout << "pos x: " << _position.x << std::endl;
 	std::cout << "pos y: " << _position.y << std::endl;
 
@@ -69,4 +74,6 @@ void GameObject::DebugPrint()
 
 	std::cout << "acc x: " << _acceleration.x << std::endl;
 	std::cout << "acc y: " << _acceleration.y << std::endl;
+
+	std::cout << "restitution: " << _restitution << std::endl;
 }
