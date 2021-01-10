@@ -28,13 +28,15 @@ public:
 	/*************************
 		Vector Math
 	*************************/
-	double getMagnitude();
+	double GetMagnitude();
 	
-	double getDotProduct(Vector);
+	double GetDotProduct(Vector);
+
+	double GetDistance(Vector);
 
 	/*************************
 		Debug
 	*************************/
-	void print();
+	void PrintVector();
 };
 
