@@ -101,6 +101,20 @@ Particle* Engine::GetParticle(const char* key)
 	return nullptr;
 }
 
+bool Engine::RemoveParticle(const char* key)
+{
+	for (auto it = particleMap.begin(); it != particleMap.end(); it++)
+	{
+		Particle& b = *it->second;
+		if (b.GetName() == key)
+		{
+			particleMap.erase(key);
+			return true;
+		}
+	}
+	return false;
+}
+
 //Handles mouse and keyboard events and returns a bool to the Engine on whether to continue running.
 bool Engine::HandleEvents()
 {
