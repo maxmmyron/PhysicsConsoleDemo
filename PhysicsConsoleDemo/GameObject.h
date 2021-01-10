@@ -6,6 +6,19 @@
 class GameObject
 {
 public:
+
+	struct ObjectArguments
+	{
+		double restitution;
+	};
+
+	struct MovementData
+	{
+		Vector position;
+		Vector velocity;
+		Vector acceleration;
+	};
+
 	/*************************
 		Getters & Setters
 	*************************/
@@ -40,7 +53,7 @@ protected:
 	Vector _position = Vector();
 	Vector _velocity = Vector();
 	Vector _acceleration = Vector();
-
+	double _restitution = 1.0;
 	void BaseUpdate(double);
 };
 

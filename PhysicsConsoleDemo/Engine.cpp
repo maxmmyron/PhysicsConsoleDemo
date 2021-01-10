@@ -87,21 +87,6 @@ bool Engine::RemoveParticle(Particle* p)
 	return false;*/
 }
 
-//Removes a particle from the Engine so long as a Particle with the desired name exists. Returns true if removed.
-bool Engine::RemoveParticle(const char* key)
-{
-	for (auto it = particleMap.begin(); it != particleMap.end(); it++)
-	{
-		Particle& b = *it->second;
-		if (b.GetName() == key)
-		{
-			particleMap.erase(key);
-			return true;
-		}
-	}
-	return false;
-}
-
 //Returns a reference to a particle in the particleMap. If there is no such Particle with the desired key, a nullptr is returned.
 Particle* Engine::GetParticle(const char* key)
 {
@@ -138,6 +123,17 @@ void Engine::Update(double dt)
 			if (p._doUpdates)
 			{
 				p.Update(dt);
+				for (auto it_inner = particleMap.begin(); it_inner != particleMap.end(); it_inner++)
+				{
+					Particle& p2 = *it_inner->second;
+					if (p2.GetName() != p.GetName())
+					{
+						if (p2._doUpdates)
+						{
+							p.CheckCollisions(p2);
+						}
+					}
+				}
 			}
 		}
 	}
