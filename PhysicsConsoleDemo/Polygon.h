@@ -4,6 +4,7 @@
 #include <vector>
 #include <Vector.h>
 #include <math.h>
+
 namespace PhysicsEngine
 {
 	class Polygon : public GameObject
@@ -51,4 +52,3 @@ namespace PhysicsEngine
 	private:
 	};
 }
-

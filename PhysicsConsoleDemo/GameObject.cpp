@@ -1,5 +1,11 @@
 #include "GameObject.h"
 
+using namespace PhysicsEngine;
+
+/*************************
+	Base Update
+*************************/
+
 void GameObject::BaseUpdate(double dt)
 {
 	_velocity += _acceleration * dt;

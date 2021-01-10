@@ -1,5 +1,7 @@
 #include "Engine.h"
 
+using namespace PhysicsEngine;
+
 Engine::Engine() {}
 
 //Runs the main Engine Loop.

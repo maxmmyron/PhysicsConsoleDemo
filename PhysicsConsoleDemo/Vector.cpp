@@ -1,6 +1,8 @@
 #include "Vector.h"
 #include <math.h>
 
+using namespace PhysicsEngine;
+
 /*************************
 	Constructor
 *************************/

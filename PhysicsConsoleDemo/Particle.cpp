@@ -4,6 +4,8 @@
         Constructors
 *************************/
 
+using namespace PhysicsEngine;
+
 Particle::Particle(const char* name, double mass, MovementData& movementData, ParticleArguments& particleArguments)
 {
     _name = name;

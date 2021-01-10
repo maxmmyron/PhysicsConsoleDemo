@@ -1,42 +1,45 @@
 #include <iostream>
 #pragma once
-class Vector
+
+namespace PhysicsEngine
 {
-public:
-	double x;
-	double y;
+	class Vector
+	{
+	public:
+		double x;
+		double y;
 
-	/*************************
-		Constructor
-	*************************/
-	Vector();
-	Vector(double);
-	Vector(double, double);
+		/*************************
+			Constructor
+		*************************/
+		Vector();
+		Vector(double);
+		Vector(double, double);
 
-	/*************************
-		Vector Manipulation
-	*************************/
-	Vector operator+=(Vector);
-	Vector operator+=(double);
-	Vector operator-=(Vector);
-	Vector operator*=(double);
+		/*************************
+			Vector Manipulation
+		*************************/
+		Vector operator+=(Vector);
+		Vector operator+=(double);
+		Vector operator-=(Vector);
+		Vector operator*=(double);
 
-	Vector operator+(Vector);
-	Vector operator-(Vector);
-	Vector operator*(double);
+		Vector operator+(Vector);
+		Vector operator-(Vector);
+		Vector operator*(double);
 
-	/*************************
-		Vector Math
-	*************************/
-	double GetMagnitude();
-	
-	double GetDotProduct(Vector);
+		/*************************
+			Vector Math
+		*************************/
+		double GetMagnitude();
 
-	double GetDistance(Vector);
+		double GetDotProduct(Vector);
 
-	/*************************
-		Debug
-	*************************/
-	void PrintVector();
-};
+		double GetDistance(Vector);
 
+		/*************************
+			Debug
+		*************************/
+		void PrintVector();
+	};
+}

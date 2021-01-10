@@ -1,5 +1,7 @@
 #include "RPolygon.h"
 
+using namespace PhysicsEngine;
+
 /*************************
 	Constructors
 *************************/
