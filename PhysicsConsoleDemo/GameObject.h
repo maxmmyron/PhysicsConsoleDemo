@@ -1,7 +1,9 @@
 #pragma once
+#define _USE_MATH_DEFINES
 
 #include <iostream>
 #include <Vector.h>
+#include <math.h>
 
 class GameObject
 {
