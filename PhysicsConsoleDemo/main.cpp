@@ -27,5 +27,4 @@ int main()
 
 	p1.DebugPrint();
 	p2.DebugPrint();
-
 }
