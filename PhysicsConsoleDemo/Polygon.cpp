@@ -29,9 +29,64 @@ void Polygon::Update(double dt)
 }
 
 /*************************
+	Polygon Info
+*************************/
+bool Polygon::IsConvex()
+{
+	std::vector<Vector> boundingPoints = GetBoundingBoxPoints();
+
+	bool neg = false;
+	bool pos = false;
+	int n = _points.size();
+	for (int i = 0; i < n; i++) {
+		int a = i;
+		int b = (i + 1) % n;
+		int c = (i + 2) % n;
+		double crossProduct = ConvexCrossProduct(_points[a].x, _points[a].y, _points[b].x, _points[b].y, _points[c].x, _points[c].y);
+		if (crossProduct < 0) neg = true;
+		else if (crossProduct > 0) pos = true;
+		if (neg && pos) return false;
+	}
+	return true;
+}
+
+double Polygon::ConvexCrossProduct(double ax, double ay, double bx, double by, double cx, double cy) {
+	double BAx = ax - bx;
+	double BAy = ay - by;
+	double BCx = cx - bx;
+	double BCy = cy - by;
+	return (BAx * BCy - BAy * BCx);
+}
+
+std::vector<Vector> Polygon::GetBoundingBoxPoints()
+{
+	Vector v1 = _points[0], v2 = _points[0];
+	for (Vector& v : _points)
+	{
+		if (v.x < v1.x)
+		{
+			v1.x = v.x;
+		}
+		if (v.x > v2.x)
+		{
+			v2.x = v.x;
+		}
+
+		if (v.y < v1.y)
+		{
+			v1.y = v.y;
+		}
+		if (v.y > v2.y)
+		{
+			v2.y = v.y;
+		}
+	}
+	return {v1, v2};
+}
+
+/*************************
 	Getters & Setters
 *************************/
-
 double Polygon::GetPolyPerim()
 {
 	double p = 0.0;

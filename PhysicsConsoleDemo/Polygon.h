@@ -32,8 +32,10 @@ namespace PhysicsEngine
 		void Update(double);
 
 		/*************************
-			Polygon Manipulation
+			Polygon Info
 		*************************/
+		bool IsConvex();
+		std::vector<Vector> GetBoundingBoxPoints();
 
 		/*************************
 			Getters & Setters
@@ -50,5 +52,6 @@ namespace PhysicsEngine
 		int _sides;
 		std::vector<Vector> _points;
 	private:
+		double ConvexCrossProduct(double, double, double, double, double, double);
 	};
 }
