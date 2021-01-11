@@ -4,6 +4,7 @@
 #include <vector>
 #include <Vector.h>
 #include <math.h>
+#include <limits>
 
 namespace PhysicsEngine
 {
@@ -36,6 +37,11 @@ namespace PhysicsEngine
 		*************************/
 		bool IsConvex();
 		std::vector<Vector> GetBoundingBoxPoints();
+
+		/*************************
+			Collision Detection
+		*************************/
+		bool SATCollision(Polygon&);
 
 		/*************************
 			Getters & Setters

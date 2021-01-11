@@ -83,6 +83,58 @@ std::vector<Vector> Polygon::GetBoundingBoxPoints()
 	}
 	return {v1, v2};
 }
+/*************************
+	Collision Detection
+*************************/
+
+// Shamelessly ripped from https://gist.github.com/nyorain/dc5af42c6e83f7ac6d831a2cfd5fbece
+// Credit to @nyorain for his SAT implementation!
+bool Polygon::SATCollision(Polygon& p)
+{
+	for (unsigned int i = 0; i < _points.size(); i++)
+	{
+		// create an edge through two verticies
+		Vector curr = _points[i];
+		Vector next = _points[(i + i) % _points.size()];
+		Vector edge = next - curr;
+
+		Vector axis(-edge.y, edge.x);
+		axis.PrintVector();
+
+		// loop over all vertices of both polygons and project them
+		// onto the axis. We are only interested in max/min projections
+		auto aMaxProj = -std::numeric_limits<float>::infinity();
+		auto aMinProj = std::numeric_limits<float>::infinity();
+		auto bMaxProj = -std::numeric_limits<float>::infinity();
+		auto bMinProj = std::numeric_limits<float>::infinity();
+
+		// loop through verticies on poly A
+		for (Vector& v : _points)
+		{
+			double projection = axis.GetDotProduct(v);
+			if (projection < aMinProj) aMinProj = projection;
+			if (projection > aMaxProj) aMaxProj = projection;
+		}
+
+		// loop through verticies on poly B
+		for (Vector& v : p._points)
+		{
+			double projection = axis.GetDotProduct(v);
+			if (projection < bMinProj) bMinProj = projection;
+			if (projection > bMaxProj) bMaxProj = projection;
+		}
+
+		// now check if the intervals the both polygons projected on the
+		// axis overlap. If they don't, we have found an axis of separation and
+		// the given polygons cannot overlap
+		if (aMaxProj < bMinProj || aMinProj > bMaxProj) {
+			return false;
+		}
+	}
+	// at this point, we have checked all axis but found no separating axis
+	// which means that the polygons must intersect.
+	return true;
+}
 
 /*************************
 	Getters & Setters
@@ -92,16 +144,7 @@ double Polygon::GetPolyPerim()
 	double p = 0.0;
 	for (unsigned int i = 0; i < _points.size(); i++)
 	{
-		if (i == _points.size() - 1)
-		{
-			p += _points[i].GetDistance(_points[0]);
-			break;
-		}
-		else
-		{
-			p += _points[i].GetDistance(_points[i + 1]);
-		}
-		
+		p += _points[i].GetDistance(_points[(i + 1) % _points.size()]);
 	}
 	return p;
 }
@@ -111,17 +154,8 @@ double Polygon::GetPolyArea()
 	double a = 0;
 	for (unsigned int i = 0; i < _points.size(); i++)
 	{
-		if (i == _points.size() - 1)
-		{
-			double avgHeight = (_points[i].y + _points[0].y) / 2;
-			a += avgHeight * (_points[0].x - _points[i].x);
-			break;
-		}
-		else
-		{
-			double avgHeight = (_points[i].y + _points[i + 1].y) / 2;
-			a += avgHeight * (_points[i + 1].x - _points[i].x);
-		}
+		double avgHeight = (_points[i].y + _points[(i+1) % _points.size()].y) / 2;
+		a += avgHeight * (_points[(i + 1) % _points.size()].x - _points[i].x);
 	}
 	return a;
 }
